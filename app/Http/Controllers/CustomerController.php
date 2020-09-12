@@ -8,7 +8,7 @@ use App\Models\Customer;
 class CustomerController extends Controller
 {
     public function getAllCustomer(){
-        //get all customer
+        //get all customer dataa
         $customers = Customer::where('deleted',0)->get();
         $result = [
             "status" =>
