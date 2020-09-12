@@ -67,7 +67,7 @@ class CustomerController extends Controller
         $addCustomer->password = $request->password;
         $addCustomer->gender = $request->gender;
         $addCustomer->is_married = $request->is_married;
-        $addCustomer->deleted = $request->address;
+        $addCustomer->address = $request->address;
         $addCustomer->deleted = 0;
         $addCustomer->save();
 
@@ -127,12 +127,12 @@ class CustomerController extends Controller
         }
     }
 
-    public function deleteCustomer(Request $request, $id){
+    public function deleteCustomer($id){
         //delete by updating column deleted
 
         if (Customer::where('id',$id)->where('deleted',0)->first()){
-            // print_r($request->all()); exit;
             $customer = Customer::find($id);
+            $customer->timestamps;
             $customer->deleted = true;
             $customer->save();
 
@@ -145,7 +145,7 @@ class CustomerController extends Controller
                   ],
                 "result" =>
                   [
-                    "data" => ""
+                    "data" => $customer
                   ]
               ];
 
