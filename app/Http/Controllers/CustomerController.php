@@ -67,7 +67,7 @@ class CustomerController extends Controller
         $addCustomer->password = $request->password;
         $addCustomer->gender = $request->gender;
         $addCustomer->is_married = $request->is_married;
-        $addCustomer->address = $request->address;
+        $addCustomer->deleted = $request->address;
         $addCustomer->deleted = 0;
         $addCustomer->save();
 
@@ -89,8 +89,8 @@ class CustomerController extends Controller
 
     public function updateCustomer(Request $request, $id){
         //update customer record
-        var_dump("testt");
-        if (Customer::where('id',$id)->exist()){
+        if (Customer::where('id',$id)->where('deleted',0)->first()){
+            // print_r($request->all()); exit;
             $customer = Customer::find($id);
             $customer->name = is_null($request->name) ? $customer->name : $request ->name;
             $customer->email = is_null($request->email) ? $customer->email : $request ->email;
@@ -129,8 +129,43 @@ class CustomerController extends Controller
 
     public function deleteCustomer(Request $request, $id){
         //delete by updating column deleted
-        if (Customer::where('deleted',0)){
 
+        if (Customer::where('id',$id)->where('deleted',0)->first()){
+            // print_r($request->all()); exit;
+            $customer = Customer::find($id);
+            $customer->deleted = true;
+            $customer->save();
+
+            $result = [
+                "status" =>
+                  [
+                    "code" => 201,
+                    "status" => "success",
+                    "message" => "deleteCustomer succeed, customer deleted"
+                  ],
+                "result" =>
+                  [
+                    "data" => ""
+                  ]
+              ];
+
+            return response()->json($result, 201);
+        } else {
+            // print_r($request->all()); exit;
+
+            $result = [
+                "status" =>
+                  [
+                    "code" => 000,
+                    "status" => "failed",
+                    "message" => "deleteCustomer failed, customer not found"
+                  ],
+                "result" =>
+                  [
+                    "data" => ""
+                  ]
+              ];
+              return response()->json($result,404);
         }
 
     }
